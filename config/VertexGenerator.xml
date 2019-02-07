@@ -20,9 +20,15 @@ VtxGenerationMethod         int      no                            ///
    NUCL-VtxGenerationMethod defines the intranuclear vertex generation method:
    - 0 : generated uniformly in volume within the nucleus 
    - 1 : generated according to a realistic nuclear density profile
+   - 2 : generated according to Nieves's calculation
   -->
    <param type="int" name="VtxGenerationMethod"> 1 </param>
 
+ </param_set>
+
+ <param_set name="Nieves">
+   <param type="string" name="CommonParam"> NUCL </param>
+   <param type="int" name="VtxGenerationMethod"> 2 </param>
  </param_set>
 
 </alg_conf>

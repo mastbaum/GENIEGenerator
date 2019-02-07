@@ -359,7 +359,7 @@ double NievesQELCCPXSec::Integral(const Interaction * in) const
     // VertexGenerator for generating a position before generating
     // each nucleon
     VertexGenerator * vg = new VertexGenerator();
-    vg->Configure("Default");
+    vg->Configure("Nieves");
     for(int inuc=0;inuc<nnuc;inuc++){
       // Generate a position in the nucleus
       TVector3 nucpos = vg->GenerateVertex(&in_curr,tgt->A());

@@ -121,16 +121,22 @@ TVector3 VertexGenerator::GenerateVertex(const Interaction * interaction,
   RandomGen * rnd = RandomGen::Instance();
   TVector3 vtx(999999.,999999.,999999.);
 
-  //GHepParticle * nucltgt = evrec->TargetNucleus();
+  bool uniform = false, realistic = false, nieves = false;
+  switch (fVtxGenMethod) {
+  case 0:
+    uniform = true;
+    break;
+  case 1:
+    realistic = true;
+    break;
+  case 2:
+    nieves = true;
+    break;
+  default:
+    LOG("Vtx", pFATAL)  << "Unknown VtxGenerationMethod " << fVtxGenMethod;
+    break;
+  }
 
-  bool uniform   = fVtxGenMethod==0;
-  bool realistic = !uniform;
-
-  //if(!nucltgt) {
-  //vtx.SetXYZ(0.,0.,0.);
-  //} 
-  //else {
-    //double A = nucltgt->A();
   double R = fR0 * TMath::Power(A, 1./3.);
   
   //Interaction * interaction = evrec->Summary();
@@ -158,14 +164,29 @@ TVector3 VertexGenerator::GenerateVertex(const Interaction * interaction,
     // ** using the requested method: either using a realistic nuclear 
     // ** density or by setting it uniformly within the nucleus
     //
-    if(realistic) {
+    if(realistic || nieves) {
       // Generate the vertex using a realistic nuclear density
       //
       LOG("Vtx", pINFO) 
 	<< "Generating vertex according to a realistic nuclear density profile";
       // get inputs to the rejection method
       double ymax = -1;
-      double rmax = 3*R;
+
+      double rmax;
+      if (nieves) {
+        if (A > 20) {
+          double c = TMath::Power(A, 0.35), z = 0.54;
+          rmax = c + 9.25 * z;
+        }
+        else {
+          // c = 1.75 for A <= 20
+          rmax = TMath::Sqrt(20.0) * 1.75;
+        }
+      }
+      else {
+        rmax = 3*R;
+      }
+
       double dr   = R/40.;
       for(double r = 0; r < rmax; r+=dr) { 
 	ymax = TMath::Max(ymax, r*r * utils::nuclear::Density(r,(int)A)); 
