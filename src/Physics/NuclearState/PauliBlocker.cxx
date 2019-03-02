@@ -90,6 +90,13 @@ void PauliBlocker::ProcessEventRecord(GHepRecord * evrec) const
 
   const Target& tgt = interaction->InitState().Tgt();
   double radius = hit->X4()->Vect().Mag();
+
+  // Only apply to final state protons and neutrons
+  if (!(pdg::IsProton(nuc_pdgc) || pdg::IsNeutron(nuc_pdgc))) {
+    LOG("PauliBlock", pINFO) << "Not proton or neutron in final state - The Pauli Blocker exits";
+    return;
+  }
+
   double kf = this->GetFermiMomentum(tgt, nuc_pdgc, radius);
 
   LOG("PauliBlock", pINFO) << "KF = " << kf;
